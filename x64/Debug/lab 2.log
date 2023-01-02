@@ -1,4 +1,0 @@
-﻿  lab 2.cpp
-C:\Users\Papa\Desktop\Программирование семестр 3\4\lab4\lab 2.cpp(175,47): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\Papa\Desktop\Программирование семестр 3\4\lab4\lab 2.cpp(336,13): warning C4101: id: неиспользованная локальная переменная
-  lab 2.vcxproj -> C:\Users\Papa\Desktop\Программирование семестр 3\4\lab4\x64\Debug\lab 2.exe
