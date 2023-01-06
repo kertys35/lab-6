@@ -8,15 +8,52 @@
 #include <string>
 #include <iostream>
 using namespace std;
-
-//Пациент//
-class patient {
-    friend void out(patient patients[30]);
-private:
+class prepatient {
+protected:
     int id;
     string name[25];
     string diagnosis[40];
     string state[20];
+public:
+    void empty_num(int lines)
+    {
+        cout << "Занятых мест "<<lines<<"\n";
+    }
+     int get_id()
+     {
+         return id;
+     }
+     string get_name()
+     {
+         return name->c_str();
+     }
+     string get_diagnosis()
+     {
+         return diagnosis->c_str();
+     }
+     string get_state()
+     {
+         return state->c_str();
+     }
+    prepatient()
+    {
+
+    }
+    prepatient(int id, string patient_name, string diagnosis, string state)
+    {
+        this->id = id;//this пример
+        this->name->assign(patient_name);
+        this->diagnosis->assign(diagnosis);
+        this->state->assign(state);
+    }
+    ////// Чистая Виртуальная функция 
+    virtual void empty_num(int lines, int* empty) = 0;
+};
+//Пациент//
+class patient:public prepatient
+{
+private:
+
     static int Count;//статичное поле
 
 public:
@@ -24,10 +61,16 @@ public:
     patient operator++();
     patient operator++(int);
     patient operator+(const patient  & other);
+    
     ///////////////////////////
-  
-    ////Статичная функция///
-    static void empty_num(int lines,int *empty)
+    patient operator=(prepatient& pat)
+    {
+        this->id = pat.get_id();
+        this->name->assign(pat.get_name());
+        this->diagnosis->assign(pat.get_diagnosis());
+        this->state->assign(pat.get_state());
+    }
+    void empty_num(int lines,int *empty)
     {
         *empty = 30 - lines;
     }
@@ -41,14 +84,23 @@ public:
     {
         return Count;
     }
+    ////////Конструктор вызывает конструктор базового класса
     patient(int id, string patient_name, string diagnosis, string state)
+        :prepatient( id, patient_name,  diagnosis, state)
     {
-        this->id = id;//this пример
-        this->name->assign(patient_name);
-        this->diagnosis->assign(diagnosis);
-        this->state->assign(state);
-    }
 
+    }
+    void out(patient patients[30])
+    {
+        int i = 0;
+        cout << "|id |ФИО пациета             |Диагноз пациента|Состояние пациента|\n";
+        while (patients[i].id > 0)
+        {
+            cout << "|" << patients[i].id << "  |" << patients[i].name->c_str() << "           |" << patients[i].diagnosis->c_str() << "           |" << patients[i].state->c_str() << "            |\n";
+            i++;
+        }
+        cout<<"------------------------------------------------------------------\n";
+    }
     patient()
     {
         int id = 0;
@@ -61,8 +113,6 @@ public:
 
     }
 
-
-public:
     void input_patient(int total_lines, patient patients[30], string patientname, string illnessname, string statusname)
     {
         patients[total_lines - 1].id = total_lines;
@@ -105,19 +155,7 @@ public:
     }
 };
 int patient::Count;
-///////Дружественная функция/////////
-void out(patient patients[30])
-{
-    int i = 0;
-    printf("|id |ФИО пациета             |Диагноз пациента|Состояние пациента|\n");
-    while (patients[i].id > 0)
-    {
-        printf("|%3d|%24s|%16s|%18s|\n", patients[i].id, patients[i].name->c_str(), patients[i].diagnosis->c_str(), patients[i].state->c_str());
-        i++;
-    }
-    printf("------------------------------------------------------------------\n");
-}
-////////////////
+
 /////Перегрузка операторов
 patient patient::operator++()
 {
@@ -137,6 +175,8 @@ patient patient::operator+(const patient  &other)
     temp.id = this->id + other.id;
     return(temp);
 }
+
+
 ///////////////////
 //Болезнь//
 class sickness {
@@ -175,7 +215,7 @@ public:
         ill[total_lines - 1].diagnosis.compare(illnessname);
         if (check == 0)
         {
-            printf("Был введен новый диагноз, введите его описание:\n");
+            cout << "Был введен новый диагноз, введите его описание:\n";
             do {
                 getline(cin,ill[total_lines - 1].explanation);
             } while (ill[total_lines - 1].explanation.length() < 1);
@@ -248,9 +288,9 @@ public:
     ////Вывод данных о докторе//
     void out_doc(int line, doctor doc[30])
     {
-        printf("|Пациент                  |Доктор                  |\n");
-        printf("|%24s |%24s|\n", doc[line - 1].patient_name.c_str(), doc[line - 1].doctor_name.c_str());
-        printf("----------------------------------------------------\n");
+        cout << "|Пациент                  |Доктор                  |\n";
+        cout << "|"<<doc[line - 1].patient_name.c_str()<<"           |"<< doc[line - 1].doctor_name.c_str()<<"            |\n";
+        cout << "----------------------------------------------------\n";
     }
 };
 
@@ -313,33 +353,33 @@ public:
     //Вывод данных о больнице//
     void out_hospital(int line, hospital hosp[30])
     {
-        printf("|Доктор                  |Больница                 |\n");
-        printf("|%24s|%24s|\n", hosp[line - 1].doctor_name.c_str(), hosp[line - 1].hospital_name.c_str());
-        printf("----------------------------------------------------\n");
+        cout << "|Доктор                  |Больница                 |\n";
+        cout << "|"<< hosp[line - 1].doctor_name.c_str()<<"          | "<<hosp[line - 1].hospital_name.c_str()<<"          |\n";
+        cout << "----------------------------------------------------\n";
     }
 };
-
+template <typename S>
 class status {
 private:
-    int id;
+    S id;
     string patient_status = "";
     string status_description = "";
 public:
     status(int new_id, string new_status, string new_description)
     {
-        id = new_id;
+        S id = new_id;
         patient_status= new_status;
         status_description= new_description;
     }
     status()
     {
-        int id;
+        S id;
         string patient_status = "";
         string status_description = "";
     }
     void out_state(int line, status state[30])
     {
-        printf("%s - %s\n", state[line - 1].patient_status.c_str(), state[line - 1].status_description.c_str());
+        cout << ""<< state[line - 1].patient_status.c_str()<<" - "<< state[line - 1].status_description.c_str()<<"\n";
     }
     void new_line(int total_lines, string statusname, status state[33])
     {
@@ -399,12 +439,12 @@ int main()
     char* locale = setlocale(LC_ALL, "RUS");
     int line_num, total_lines = 1, check_lines = 0;
     string patientname, doctorname, hospitalname, statusname, illnessname;
-    patient* patients = new patient[30]{ };
-    string str1 = "Алексей А.A.";
-    string str2 = "Алексей А.A.";
-    string str3 = "Алексей А.A.";
-    patients[0] = { 1, str1, str2, str3 };
-    status* state = new status[33]{ };
+    patient patients[30];
+    string str1 = "Александр И.И";
+    string str2 = "Грипп";
+    string str3 = "Здоров";
+    patients[0] = {1, str1, str2, str3 };
+    status<int>* state = new status<int>[33]{ };
     state[32] = { 32,"Серьёзное", "Необходимо постоянное наблюдение и уход за пациентом" };
     state[31] = { 31,"Умеренное","Не наблюдается тяжёлых ослажнений" };
     state[30] = { 30,"Здоров","Пациент здоров" };
@@ -417,36 +457,37 @@ int main()
     str1 = "Грипп";
     str2 ="Острое респираторное вирусное заболевание, вызываемое вирусами гриппа,поражающее верхние дыхательные пути";
     ill[0] = { 1,str1,str2};
+    prepatient* pat =&patients[0];
     int repeat = 1;
     do {
         check_lines = 0;
-        out(patients);
-        printf("Введите:\n1-для просмотра данных о пациенте\n2-для просмотра данных о болезни\n3-для просмотра состояния пациета\n4-для удаления строки\n5-для добавления строки\n6-Записать таблицу в файл\n7-закрыть программу\n8-показать кол-во свободных месь\n");
+        patients->out(patients);
+        cout << "Введите:\n1-для просмотра данных о пациенте\n2-для просмотра данных о болезни\n3-для просмотра состояния пациета\n4-для удаления строки\n5-для добавления строки\n6-Записать таблицу в файл\n7-закрыть программу\n8-показать кол-во свободных мест\n9-количество занятых мест\n";
         int choice_patient, choice_doctor;
         do {
             scanf_s("%d", &choice_patient);
-        } while (choice_patient > 8 || choice_patient < 1);
+        } while (choice_patient > 9 || choice_patient < 1);
         switch (choice_patient)
         {
             //просмотр данных о пациенте
         case 1:
             if (total_lines > 0)
             {
-                printf("Введите номер пациента:\n");
+                cout << "Введите номер пациента:\n";
                 do {
                     if (check_lines)
-                        printf("Повторите ввод\n");
+                        cout << "Повторите ввод\n";
                     scanf_s("%d", &line_num);
                     check_lines = 1;
                 } while (line_num > total_lines || line_num < 1);
                 doc->out_doc(line_num, doc);
-                printf("Введите:\n1-Просмотр информации о докторе\nДля возвращение к предыдущей таблице нажмите любую другую кнопку\n");
+                cout << "Введите:\n1-Просмотр информации о докторе\nДля возвращение к предыдущей таблице нажмите любую другую кнопку\n";
                 scanf_s("%d", &choice_doctor);
                 switch (choice_doctor)
                 {
                 case 1:
                     hosp->out_hospital(line_num, hosp);
-                    printf("Нажмите любую кнопку для возвращения в главную таблицу\n");
+                    cout << "Нажмите любую кнопку для возвращения в главную таблицу\n";
                     _getch();
                     break;
                 default:
@@ -454,45 +495,45 @@ int main()
                 }
             }
             else
-                printf("Нет записей\n");
+                cout << "Нет записей\n";
             break;
             //просмотр данных о болезни
         case 2:
             if (total_lines > 0)
             {
                 check_lines = 0;
-                printf("Введите номер пациента:\n");
+                cout << "Введите номер пациента:\n";
                 do {
                     if (check_lines)
-                        printf("Повторите ввод\n");
+                        cout << "Повторите ввод\n";
                     scanf_s("%d", &line_num);
                     check_lines = 1;
                 } while (line_num > total_lines || line_num < 1);
                 ill->out_illness(line_num, ill);
-                printf("Нажмите любую кнопку для возвращения в главную таблицу\n");
+                cout << "Нажмите любую кнопку для возвращения в главную таблицу\n";
                 _getch();
             }
             else
-                printf("Нет записей\n");
+                cout << "Нет записей\n";
             break;
             //просмотр состояния пациета
         case 3:
             check_lines = 0;
             if (total_lines > 0)
             {
-                printf("Введите номер пациента:\n");
+                cout << "Введите номер пациента:\n";
                 do {
                     if (check_lines)
-                        printf("Повторите ввод\n");
+                        cout << "Повторите ввод\n";
                     scanf_s("%d", &line_num);
                     check_lines = 1;
                 } while (line_num > total_lines || line_num < 1);
                 state->out_state(line_num, state);
-                printf("Нажмите любую кнопку для возвращения в главную таблицу\n");
+                cout << "Нажмите любую кнопку для возвращения в главную таблицу\n";
                 _getch();
             }
             else
-                printf("Нет записей\n");
+                cout << "Нет записей\n";
 
             break;
             //удаление строки
@@ -500,10 +541,10 @@ int main()
             if (total_lines > 0)
             {
                 check_lines = 0;
-                printf("Введите номер строки для удаления:\n");
+                cout << "Введите номер строки для удаления:\n";
                 do {
                     if (check_lines)
-                        printf("Повторите ввод\n");
+                        cout << "Повторите ввод\n";
                     scanf_s("%d", &line_num);
                     check_lines = 1;
                 } while (line_num > total_lines || line_num < 1);
@@ -514,31 +555,31 @@ int main()
                 total_lines--;
             }
             else
-                printf("Нет записей для удаления\n");
+                cout << "Нет записей для удаления\n";
             break;
             //добавления строки
         case 5:
             total_lines++;
-            printf("Введите ФИО пациента:\n");
+            cout << "Введите ФИО пациента:\n";
             do {
                 getline(cin,patientname);
             } while (patientname.length() == 0);
-            printf("Введите ФИО лечащего доктора пациента:\n");
+            cout << "Введите ФИО лечащего доктора пациента:\n";
             do {
                 getline(cin, doctorname);
             } while (doctorname.length() == 0);
             doc->input_doc(total_lines, doc, doctorname, patientname);
-            printf("Введите название больницы доктора:\n");
+            cout << "Введите название больницы доктора:\n";
             do {
                 getline(cin, hospitalname);
             } while (hospitalname.length() == 0);
             hosp->input_hosp(total_lines, hosp, doctorname, hospitalname);
-            printf("Введите диагноз пациента:\n");
+            cout << "Введите диагноз пациента:\n";
             do {
                 getline(cin, illnessname);
             } while (illnessname.length() == 0);
             ill->ill_in(total_lines, ill, illnessname);
-            printf("Введите состояние пациента (Здоров, Умеренное, Серьёзное):\n");
+            cout << "Введите состояние пациента (Здоров, Умеренное, Серьёзное):\n";
             do {
                 getline(cin, statusname);
             } while (statusname.compare("Здоров") != 0 && statusname.compare("Умеренное") != 0 && statusname.compare("Серьёзное") != 0);
@@ -570,10 +611,14 @@ int main()
             int num;
             int *res;
             res = (int*)malloc(sizeof(int));
-            patient::empty_num(total_lines,&num);
+            pat->empty_num(total_lines,&num);
             res=patients->setcount(num);
             *res=patients->getcount();
-            printf("Свободных мест:%d\n", *res);
+            cout << "Свободных мест:"<< *res<<"\n";
+            break;
+        case 9:
+            int pre;
+            patients->prepatient::empty_num(total_lines);
             break;
         default:
             break;

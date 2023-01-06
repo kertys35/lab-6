@@ -1,4 +1,9 @@
 ﻿  lab 2.cpp
-C:\Users\Papa\Desktop\Программирование семестр 3\4\lab4\lab 2.cpp(175,47): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\Papa\Desktop\Программирование семестр 3\4\lab4\lab 2.cpp(336,13): warning C4101: id: неиспользованная локальная переменная
-  lab 2.vcxproj -> C:\Users\Papa\Desktop\Программирование семестр 3\4\lab4\x64\Debug\lab 2.exe
+C:\Users\Papa\Desktop\Программирование семестр 3\6\lab-6\lab 2.cpp(215,47): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
+C:\Users\Papa\Desktop\Программирование семестр 3\6\lab-6\lab 2.cpp(627,22): warning C4154: удаление массива; выполнено преобразование к указателю
+C:\Users\Papa\Desktop\Программирование семестр 3\6\lab-6\lab 2.cpp(620,17): warning C4101: pre: неиспользованная локальная переменная
+C:\Users\Papa\Desktop\Программирование семестр 3\6\lab-6\lab 2.cpp(376,11): warning C4101: id: неиспользованная локальная переменная
+C:\Users\Papa\Desktop\Программирование семестр 3\6\lab-6\lab 2.cpp(374): message : во время компиляции функции-члена класс шаблон "status<int>::status(void)"
+C:\Users\Papa\Desktop\Программирование семестр 3\6\lab-6\predefined C++ types (compiler internal)(423): message : выполняется компиляция ссылки на экземпляр шаблон функции "status<int>::status(void)"
+C:\Users\Papa\Desktop\Программирование семестр 3\6\lab-6\lab 2.cpp(447): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "status<int>"
+  lab 2.vcxproj -> C:\Users\Papa\Desktop\Программирование семестр 3\6\lab-6\x64\Debug\lab 2.exe
