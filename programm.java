@@ -7,21 +7,50 @@ import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-//Пациент
-class patient 
+interface Printable{
+ 
+    void print();
+}
+/////////Base class///////////
+abstract class  prepatient implements Cloneable {
+	protected  int id=0;
+	protected String name = "";
+	protected String diagnosis ="";
+	protected String state = "";
+
+ public<S> void empty_num(S lines)////Шаблон метода
+    {
+        System.out.println("Занятых мест:"+lines.toString()+"\n");
+    }
+    prepatient()
+    {
+
+    }
+    prepatient(int id, String patient_name, String diagnosis, String state)
+    {
+        this.id = id;//this пример
+        this.name=patient_name;
+        this.diagnosis=diagnosis;
+        this.state=state;
+    }
+      public Object clone() throws CloneNotSupportedException
+     {
+        return super.clone();
+     }
+    public abstract  void input_patient(int total_lines, patient[] patients, String patientname, String illnessname, String statusname);///абстрактный метод
+};
+
+class patient extends prepatient implements Printable, Cloneable
 {
-	private int id=0;
-	private String name = "";
-	private String diagnosis ="";
-	private String state = "";
-	public patient(int new_id, String new_patient_name, String new_diagnosis, String new_state)
+	public patient(int id, String patient_name, String diagnosis, String state)
 	{
-		id = new_id;
-		name= new_patient_name;
-		diagnosis=new_diagnosis;
-		state=new_state;
+        super(id,patient_name,diagnosis,state);/////Вызов базового конструктора
 	}
 
+    public void print()
+    {
+        System.out.printf("|%3d|%24s|%16s|%18s|\n", id, name, diagnosis, state);
+    }
 	public patient()
 	{
 		int id = 0;
@@ -40,7 +69,7 @@ class patient
 		System.out.printf("|id |ФИО пациета             |Диагноз пациента|Состояние пациента|\n");
 		while (patients[i]!=null&&patients[i].id > 0)
 		{
-			System.out.printf("|%3d|%24s|%16s|%18s|\n", patients[i].id, patients[i].name, patients[i].diagnosis, patients[i].state);
+			patients[i].print();
 			i++;
 		}
 		System.out.printf("------------------------------------------------------------------\n");
@@ -73,6 +102,10 @@ class patient
             e.printStackTrace();
         }
 	}
+    public Object clone() throws CloneNotSupportedException
+     {
+        return super.clone();
+     }
 	//Удаление строки
 	public final void patient_del(int line, patient[] patients)
 	{
@@ -98,7 +131,7 @@ class patient
 	}
 }
 //Болезнь
-class sickness 
+class sickness implements Cloneable
 {
 	private int id=0;
 	private String diagnosis = "";
@@ -116,10 +149,10 @@ class sickness
 		final String diagnosis = "";
 		final String explanation = "";
 	}
-	public final void close()
-	{
-
-	}
+     public Object clone() throws CloneNotSupportedException
+     {
+        return super.clone();
+     }
 	//Удаление строки
 	public final void ill_del(int line, sickness[] ill)
 	{
@@ -151,7 +184,7 @@ class sickness
 		int ill_end = 0;
 			int i = 0;
 			int ch=ill[i].diagnosis.length();
-			while (ill[i]!=null&&ill[i].id > 0)
+		while (ill[i]!=null&&ill[i].id > 0)
 			{
 				if (illnessname.compareToIgnoreCase (ill[i].diagnosis) == 0)
 				{
@@ -188,7 +221,7 @@ class sickness
 	}
 }
 //Доктор
-class doctor 
+class doctor implements Cloneable
 {
 	private int id=0;
 	private String patient_name = "";
@@ -201,7 +234,10 @@ class doctor
 		final String doctor_name = "";
 	}
 
-
+     public Object clone() throws CloneNotSupportedException
+     {
+        return super.clone();
+     }
 	public doctor(int new_id, String new_patient_name, String new_doctor_name)
 	{
 		id = new_id;
@@ -341,7 +377,7 @@ public final void out_doc(int line, doctor[] doc)
 }
 }
 //Больница
-class hospital 
+class hospital implements Cloneable
 {
 	private int id=0;
 	private String doctor_name ="";
@@ -421,11 +457,11 @@ public final void out_hospital(int line, hospital[] hosp)
 }
 
 //Состояние пациента
-class status 
+class status implements Cloneable
 {
-	private int id=0;
-	private   String patient_status="";
-	private   String status_description="";
+	public int id=0;
+	public   String patient_status="";
+	public   String status_description="";
 	
 	public status()
 	{
@@ -503,7 +539,7 @@ class status
 		}
 		state[i-1].id=0;
 	}
-
+    
 	public final void close()
 	{
 
@@ -512,7 +548,7 @@ class status
 
  class Main
 {
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException,CloneNotSupportedException
 	{
 		Scanner in = new Scanner(System.in,"ibm-866");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -526,6 +562,7 @@ class status
 		String illnessname = new String(new char[40]);
 		patient[] patients=new patient[30];
 		patients[0] = new patient(1, "Алексей А.A.", "Грипп", "Здоров");
+		patient clone=(patient)patients[0].clone();//clone
 		status[] state = new status[33];
 		for(int k=0;k<33;k++)
 		{
@@ -548,6 +585,7 @@ class status
     		         break;
 		    }
 		}
+		status clone_st=(status)state[30];//clone
 		hospital[] hosp = new hospital[30];
 		hosp[0] = new hospital(1,"Борисов Ф.А.", "Городская поликлиника №12");
 		doctor[] doc = new doctor[30];
@@ -578,13 +616,13 @@ class status
 		{
 			check_lines = 0;
 			patients[0].out(patients);
-			System.out.print("Введите:\n1-для просмотра данных о пациенте\n2-для просмотра данных о болезни\n3-для просмотра состояния пациета\n4-для удаления строки\n5-для добавления строки\n6-Записать таблицу в файл\n7-закрыть программу\n8-Вывод докторов и всех их пациентов\n");
+			System.out.print("Введите:\n1-для просмотра данных о пациенте\n2-для просмотра данных о болезни\n3-для просмотра состояния пациета\n4-для удаления строки\n5-для добавления строки\n6-Записать таблицу в файл\n7-закрыть программу\n8-Вывод докторов и всех их пациентов\n9-количество занятых мест\n10-демонстрация клонирования\n");
 			int choice_patient;
 			int choice_doctor;
 			do
 			{
 				choice_patient=in.nextInt();
-			} while (choice_patient > 8 || choice_patient < 1);
+			} while (choice_patient > 10 || choice_patient < 1);
 			switch (choice_patient)
 			{
 			   //просмотр данных о пациенте
@@ -768,6 +806,18 @@ class status
 				break;
 			case 8:///вывод списка врачей и их пациентов
 				doc_list[0][0].doc_list_out(total_lines,doc_list);
+				break;
+			case 9:
+			    patients[0].empty_num(total_lines);
+			    break;
+			case 10:
+        		System.out.println("Глубокое клонирование:\n"+"Оригинал:"+patients[0].name+"\nКлон:"+clone.name+"\n");
+        		clone.name="sdlkjdglj";
+        		System.out.println("После изменения значения клона:\n"+"Оригинал:"+patients[0].name+"\nКлон:"+clone.name+"\n");
+        	    System.out.println("Мелкое клонирование:\n"+"Оригинал:"+state[30].patient_status+"\nКлон:"+clone_st.patient_status+"\n");
+        		clone_st.patient_status="sdlkjdglj";
+        		System.out.println("После изменения значения клона:\n"+"Оригинал:"+state[30].patient_status+"\nКлон:"+clone_st.patient_status+"\n");
+        		break;
 			default:
 				break;
 			}
